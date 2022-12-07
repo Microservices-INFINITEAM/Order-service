@@ -16,16 +16,30 @@ public class OrderEntity implements Serializable {  // 직렬화 : 가지고 있
     private Long id;
 
     @Column(nullable = false, length = 120, unique = true)
-    private String productId;
+    private String musicId;
 
     @Column(nullable = false)
-    private Integer qty;
+    private String musicName;
 
     @Column(nullable = false)
-    private Integer unitPrice;
+    private String musicArtistName;
+
+    @Column(nullable = false)
+    private String musicGenre;
+
+    @Column(nullable = false)
+    private Integer musicQty;
+
+    @Column(nullable = false)
+    private Integer musicPrice;
 
     @Column(nullable = false)
     private Integer totalPrice;
+
+
+    @Column(nullable = false, updatable = false, insertable = false)
+    @ColumnDefault(value = "CURRENT_TIMESTAMP")
+    private Date createdAt;
 
     @Column(nullable = false)
     private String userId;
@@ -33,7 +47,5 @@ public class OrderEntity implements Serializable {  // 직렬화 : 가지고 있
     @Column(nullable = false, unique = true)
     private String orderId;
 
-    @Column(nullable = false, updatable = false, insertable = false)
-    @ColumnDefault(value = "CURRENT_TIMESTAMP")
-    private Date createdAt;
+
 }

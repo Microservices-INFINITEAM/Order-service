@@ -44,6 +44,12 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
     }
 
+    @DeleteMapping("/{orderId}")
+    public String deleteOrder(@PathVariable String orderId){
+       orderService.deleteByOrderId(orderId);
+       return orderId+"is deleted.";
+    }
+
     @GetMapping("/{userId}/orders")
     public ResponseEntity<List<ResponseOrder>> getOrders(@PathVariable String userId){
         ModelMapper mapper = new ModelMapper();

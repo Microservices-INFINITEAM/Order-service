@@ -8,11 +8,13 @@ import java.util.Date;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseOrder {
-    private String productId;
-    private Integer qty;
-    private Integer unitPrice;
+    private String orderID;
+    private String musicID;
+    private String musicArtistName;
+    private String musicGenre;
+    private Integer musicQty;
+    private Integer musicPrice;
     private Integer totalPrice;
     private Date createdAt;
 
-    private String orderId;
 }

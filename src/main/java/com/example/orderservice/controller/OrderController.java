@@ -1,11 +1,14 @@
 package com.example.orderservice.controller;
 
+import com.example.orderservice.client.MusicServiceClient;
 import com.example.orderservice.dto.OrderDto;
 import com.example.orderservice.jpa.OrderEntity;
 import com.example.orderservice.service.OrderService;
 import com.example.orderservice.vo.RequestOrder;
+import com.example.orderservice.vo.ResponseMusic;
 import com.example.orderservice.vo.ResponseOrder;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.criterion.Order;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.core.env.Environment;
@@ -22,6 +25,7 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+
 
     private final Environment env;
 
@@ -66,5 +70,11 @@ public class OrderController {
         ResponseOrder returnOrder = mapper.map(orderDto, ResponseOrder.class);
 
         return ResponseEntity.status(HttpStatus.OK).body(returnOrder);
+    }
+
+    @DeleteMapping("/{orderId}")
+    public String deleteOrder(@PathVariable String orderId){
+        orderService.deleteByOrderId(orderId);
+        return orderId+"is deleted.";
     }
 }

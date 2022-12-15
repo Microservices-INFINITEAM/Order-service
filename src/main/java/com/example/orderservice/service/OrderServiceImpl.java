@@ -1,25 +1,40 @@
 package com.example.orderservice.service;
 
+import com.example.orderservice.client.MusicServiceClient;
 import com.example.orderservice.dto.OrderDto;
 import com.example.orderservice.jpa.OrderEntity;
 import com.example.orderservice.jpa.OrderRepository;
-import lombok.RequiredArgsConstructor;
+import com.example.orderservice.vo.ResponseMusic;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+    private final MusicServiceClient musicServiceClient;
+
+    @Autowired
+    public OrderServiceImpl(
+            OrderRepository orderRepository,
+            MusicServiceClient musicServiceClient
+    ) {
+        this.orderRepository = orderRepository;
+        this.musicServiceClient = musicServiceClient;
+    }
+
+
 
     @Override
     public OrderDto createOrder(OrderDto orderDto) {
         orderDto.setOrderId(UUID.randomUUID().toString());
-        orderDto.setTotalPrice(orderDto.getQty() * orderDto.getUnitPrice());
+        orderDto.setMusicTotalPrice(orderDto.getMusicQty() * orderDto.getMusicPrice());
 
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -27,21 +42,38 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.save(orderEntity);
 
-        return mapper.map(orderEntity, OrderDto.class);
+        ResponseMusic music = musicServiceClient.getMusics(orderEntity.getMusicId());
+        orderDto.setMusic(music);
+
+
+        return orderDto;
     }
 
     @Override
     public OrderDto getOrderByOrderId(String orderId) {
-        OrderEntity orderEntity = orderRepository.findByOrderId(orderId).orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        OrderEntity orderEntity = orderRepository.findByOrderId(orderId);
 
-        ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        OrderDto orderDto = new ModelMapper().map(orderEntity, OrderDto.class);
 
-        return mapper.map(orderEntity, OrderDto.class);
+        ResponseMusic music = musicServiceClient.getMusics(orderEntity.getMusicId());
+        orderDto.setMusic(music);
+
+        return orderDto;
     }
 
     @Override
     public Iterable<OrderEntity> getOrdersByUserId(String userId) {
         return orderRepository.findByUserId(userId);
     }
+
+    public Iterable<OrderEntity> getOrderByUserIdAll() {return orderRepository.findAll();}
+
+    @Override
+    public OrderDto deleteByOrderId(String orderId) {
+        OrderEntity orderEntity = orderRepository.findByOrderId(orderId);
+        orderRepository.delete(orderEntity);
+        return null;
+    }
+
+
 }

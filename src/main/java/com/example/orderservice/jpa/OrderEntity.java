@@ -12,26 +12,27 @@ import java.util.Date;
 @Table(name = "orders")
 public class OrderEntity implements Serializable {  // 직렬화 : 가지고 있는 객체를 네트워크로 전송하고나 데이터베이스에 보관하기 위해 마샬링/언마샬링 작업을 함
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
-    @Column(nullable = false, length = 120, unique = true)
-    private String productId;
+    @Column(nullable = false, length =120, unique= false)
+    private String musicId;
 
     @Column(nullable = false)
-    private Integer qty;
+    private Integer musicQty;
 
     @Column(nullable = false)
-    private Integer unitPrice;
+    private Integer musicTotalPrice;
 
     @Column(nullable = false)
-    private Integer totalPrice;
+    private Integer musicPrice;
 
     @Column(nullable = false)
     private String userId;
 
     @Column(nullable = false, unique = true)
     private String orderId;
+
 
     @Column(nullable = false, updatable = false, insertable = false)
     @ColumnDefault(value = "CURRENT_TIMESTAMP")
